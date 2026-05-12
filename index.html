@@ -860,9 +860,9 @@
       <div class="form-note">
         <strong>📬 <span data-ko>제출 안내</span><span data-en>Submission Info</span></strong><br>
         <span data-ko>작성 완료 후 <b>이메일 앱이 자동으로 열립니다</b>. 서식 파일(HWP/PDF)은 이메일에 직접 첨부해 주세요.<br>
-        수신: 원우회 부회장(smit.club.vp@gmail.com) · 원우회 회장(smit.club.president@gmail.com) · 교학팀(academic@smit.ac.kr)</span>
+        수신: 원우회 부회장(kokoroa@smit.kr) · 원우회 회장(skyoon7517@naver.com) · 교학팀(academic@smit.kr)</span>
         <span data-en>After submission, <b>your email app will open</b>. Please attach the HWP/PDF forms to the email.<br>
-        Recipients: VP (smit.club.vp@gmail.com) · President (smit.club.president@gmail.com) · Academic Affairs (academic@smit.ac.kr)</span>
+        Recipients: VP (kokoroa@smit.kr) · President (skyoon7517@naver.com) · Academic Affairs (academic@smit.kr)</span>
       </div>
 
       <form id="clubForm" onsubmit="submitForm(event)">
@@ -1353,7 +1353,7 @@ Space, budget, equipment requests, etc..."></textarea>
       <div class="contact-card">
         <div class="cc-icon">👑</div>
         <h4><span data-ko>원우회 회장</span><span data-en>Council President</span></h4>
-        <p>smit.club.president@gmail.com</p>
+        <p>skyoon7517@naver.com</p>
       </div>
       <div class="contact-card">
         <div class="cc-icon">🤝</div>
@@ -1363,15 +1363,9 @@ Space, budget, equipment requests, etc..."></textarea>
       <div class="contact-card">
         <div class="cc-icon">🏫</div>
         <h4><span data-ko>교학팀</span><span data-en>Academic Affairs</span></h4>
-        <p>academic@smit.ac.kr</p>
+        <p>academic@smit.kr</p>
       </div>
-      <div class="contact-card">
-        <div class="cc-icon">💬</div>
-        <h4>KakaoTalk / WeChat</h4>
-        <p>
-          <span data-ko>카카오: smit_club_vp<br>위챗: smit_club</span>
-          <span data-en>Kakao: smit_club_vp<br>WeChat: smit_club</span>
-        </p>
+      <div style="display:none">
       </div>
     </div>
   </div>
@@ -1622,7 +1616,7 @@ SMIT 원우회 동아리 포털 제출
 
   const subject = encodeURIComponent(`[SMIT 동아리신청] ${d.get('clubNameKo')} / ${d.get('clubNameEn')}`);
   const bodyEnc = encodeURIComponent(body);
-  const to = 'kokoroa@smit.kr,smit.club.president@gmail.com,academic@smit.ac.kr';
+  const to = 'kokoroa@smit.kr,skyoon7517@naver.com,academic@smit.kr';
   const mailtoLink = `mailto:${to}?subject=${subject}&body=${bodyEnc}`;
 
   window.location.href = mailtoLink;
