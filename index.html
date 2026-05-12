@@ -624,12 +624,13 @@
       .form-wrap { padding:24px 16px; border-radius:20px; }
 
       /* Dashboard KPI: 2열 유지 */
-      .dash-kpi { grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:24px; }
-      .kpi-card { padding:12px 8px; border-radius:14px; }
-      .kpi-card .kpi-num { font-size:1.3rem; }
-      .kpi-card .kpi-icon { font-size:1.1rem; margin-bottom:6px; }
-      .kpi-card .kpi-lbl { font-size:.62rem; line-height:1.3; }
-      .kpi-card .kpi-sub { font-size:.58rem; margin-top:2px; }
+      .dash-kpi { grid-template-columns:1fr; gap:10px; margin-bottom:24px; }
+      .kpi-card { padding:16px 20px; border-radius:16px; display:flex; align-items:center; gap:16px; }
+      .kpi-card .kpi-icon { font-size:1.6rem; margin-bottom:0; flex-shrink:0; }
+      .kpi-card .kpi-num { font-size:1.6rem; margin-bottom:2px; }
+      .kpi-card .kpi-lbl { font-size:.82rem; }
+      .kpi-card .kpi-sub { font-size:.75rem; }
+      .kpi-card::before { display:none; }
       .kpi-card { padding:16px 14px; }
       .kpi-card .kpi-num { font-size:1.6rem; }
       /* 차트 1열 */
