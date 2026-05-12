@@ -401,9 +401,14 @@
     /* ─── FOOTER ─── */
     footer {
       background:var(--dark); color:rgba(255,255,255,.6);
-      text-align:center; padding:28px; font-size:.8rem;
+      text-align:center; padding:36px 24px; font-size:.8rem;
     }
     footer strong { color:#fff; }
+    .footer-logo-wrap {
+      background:rgba(255,255,255,0.95); border-radius:12px;
+      display:inline-block; padding:10px 22px; margin-bottom:16px;
+    }
+    .footer-logo-wrap img { height:36px; width:auto; display:block; }
 
     /* ─── LANG TOGGLE ─── */
     [data-ko], [data-en] { transition:opacity .2s; }
@@ -1414,7 +1419,10 @@ Space, budget, equipment requests, etc..."></textarea>
 
 <!-- ── FOOTER ── -->
 <footer>
-  <strong>서울미디어대학원대학교 원우회 (SMIT Student Council)</strong><br>
+  <div class="footer-logo-wrap">
+    <img src="kgit_logo_full.png" alt="서울미디어대학원대학교">
+  </div><br>
+  <strong>원우회 (SMIT Student Council)</strong><br>
   <span data-ko>동아리 제도 도입 첫 해 · 2026 · 모든 원우를 환영합니다 🌟</span>
   <span data-en>First year of the club system · 2026 · All students welcome 🌟</span>
 </footer>
