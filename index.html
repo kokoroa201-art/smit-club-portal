@@ -1075,11 +1075,21 @@ Space, budget, equipment requests, etc..."></textarea>
 
         </div><!-- /form-grid -->
 
-        <div style="margin-top:28px;">
+        <div style="margin-top:28px; display:flex; flex-direction:column; gap:12px;">
           <button type="submit" class="submit-btn">
             <i class="fa fa-paper-plane"></i>
             <span data-ko>신청서 제출 (원우회 + 교학팀으로 발송)</span>
             <span data-en>Submit Application (to Council &amp; Academic Affairs)</span>
+          </button>
+          <button type="button" onclick="printDoc()" style="
+            width:100%; padding:14px; border-radius:16px; cursor:pointer;
+            background:#fff; border:2px solid var(--sky); color:var(--sky);
+            font-size:.95rem; font-weight:700; font-family:inherit;
+            display:flex; align-items:center; justify-content:center; gap:10px;
+            transition:.2s;">
+            <i class="fa fa-print"></i>
+            <span data-ko>문서 출력 / PDF 저장</span>
+            <span data-en>Print / Save as PDF</span>
           </button>
         </div>
       </form>
@@ -1614,6 +1624,99 @@ function addMember() {
     <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>
   `;
   cont.appendChild(row);
+}
+
+/* ─── PRINT DOC ─── */
+function printDoc() {
+  const f = document.getElementById('clubForm');
+  const d = new FormData(f);
+  const members = [...f.querySelectorAll('[name="member[]"]')]
+    .map((el,i) => {
+      const id = f.querySelectorAll('[name="memberid[]"]')[i]?.value || '-';
+      return el.value ? `<tr><td>${el.value}</td><td>${id}</td></tr>` : '';
+    }).join('');
+
+  const now = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric'});
+
+  const html = `<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8">
+<title>동아리 개설 신청서 - ${d.get('clubNameKo')}</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; font-size:11pt; color:#111; line-height:1.6; }
+  .header { text-align:center; border-bottom:3px double #333; padding-bottom:14px; margin-bottom:20px; }
+  .header .school { font-size:12pt; color:#555; margin-bottom:4px; }
+  .header h1 { font-size:20pt; font-weight:900; letter-spacing:2px; }
+  .header .meta { font-size:10pt; color:#666; margin-top:6px; }
+  table.info { width:100%; border-collapse:collapse; margin-bottom:16px; }
+  table.info th { background:#f0f0f0; width:110px; padding:8px 10px; border:1px solid #ccc; font-weight:700; font-size:10.5pt; text-align:left; white-space:nowrap; }
+  table.info td { padding:8px 12px; border:1px solid #ccc; font-size:10.5pt; }
+  .section-title { font-size:11.5pt; font-weight:700; background:#333; color:#fff; padding:6px 12px; margin:18px 0 0; }
+  table.members { width:100%; border-collapse:collapse; margin-bottom:4px; }
+  table.members th { background:#f0f0f0; padding:6px 10px; border:1px solid #ccc; font-size:10pt; }
+  table.members td { padding:6px 10px; border:1px solid #ccc; font-size:10pt; }
+  .text-box { border:1px solid #ccc; padding:10px 12px; font-size:10.5pt; min-height:60px; white-space:pre-wrap; margin-bottom:4px; }
+  .sign-area { margin-top:36px; display:flex; justify-content:flex-end; gap:48px; }
+  .sign-box { text-align:center; font-size:10.5pt; }
+  .sign-line { border-bottom:1px solid #333; width:140px; margin:28px auto 4px; }
+  .footer-note { margin-top:24px; font-size:9pt; color:#888; text-align:center; border-top:1px solid #ddd; padding-top:10px; }
+</style>
+</head><body>
+
+<div class="header">
+  <div class="school">서울미디어대학원대학교 원우회</div>
+  <h1>동아리 개설 신청서</h1>
+  <div class="meta">제출일: ${now}</div>
+</div>
+
+<div class="section-title">① 동아리 기본 정보</div>
+<table class="info">
+  <tr><th>동아리명 (국문)</th><td>${d.get('clubNameKo')||'-'}</td></tr>
+  <tr><th>동아리명 (영문)</th><td>${d.get('clubNameEn')||'-'}</td></tr>
+  <tr><th>분류</th><td>${d.get('category')||'-'}</td></tr>
+  <tr><th>예상 회원 수</th><td>${d.get('memberCount')||'-'}명</td></tr>
+  <tr><th>지도교수</th><td>${d.get('advisor')||'미정'}</td></tr>
+</table>
+
+<div class="section-title">② 대표자 정보</div>
+<table class="info">
+  <tr><th>이름</th><td>${d.get('presidentName')||'-'}</td></tr>
+  <tr><th>학번</th><td>${d.get('studentId')||'-'}</td></tr>
+  <tr><th>이메일</th><td>${d.get('email')||'-'}</td></tr>
+  <tr><th>연락처</th><td>${d.get('phone')||'-'}</td></tr>
+  <tr><th>국적</th><td>${d.get('nationality')||'-'}</td></tr>
+</table>
+
+<div class="section-title">③ 창립 회원 명단</div>
+<table class="members">
+  <tr><th style="width:50%">이름 / Name</th><th>학번 / Student ID</th></tr>
+  ${members||'<tr><td colspan="2" style="text-align:center;color:#999">미입력</td></tr>'}
+</table>
+
+<div class="section-title">④ 동아리 설립 목적</div>
+<div class="text-box">${(d.get('purpose')||'').replace(/</g,'&lt;')}</div>
+
+<div class="section-title">⑤ 주요 활동 계획</div>
+<div class="text-box">${(d.get('activities')||'(미작성)').replace(/</g,'&lt;')}</div>
+
+<div class="section-title">⑥ 기타 요청사항</div>
+<div class="text-box">${(d.get('extra')||'(없음)').replace(/</g,'&lt;')}</div>
+
+<div class="sign-area">
+  <div class="sign-box"><div class="sign-line"></div>대표자 서명</div>
+  <div class="sign-box"><div class="sign-line"></div>원우회 확인</div>
+  <div class="sign-box"><div class="sign-line"></div>교학처 확인</div>
+</div>
+
+<div class="footer-note">본 신청서는 SMIT 동아리포털을 통해 제출되었습니다 · Seoul Media Institute of Technology</div>
+</body></html>`;
+
+  const w = window.open('','_blank','width=800,height=1000');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(() => w.print(), 400);
 }
 
 /* ─── FORM SUBMIT ─── */
