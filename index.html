@@ -285,8 +285,8 @@
     /* ─── DASHBOARD ─── */
     #dashboard { background:linear-gradient(135deg,#F0F4FF,#FFF8F0); }
     .dash-kpi {
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:16px; margin-bottom:40px;
+      display:grid; grid-template-columns:repeat(5,1fr);
+      gap:12px; margin-bottom:40px; overflow-x:auto;
     }
     .kpi-card {
       background:#fff; border-radius:20px; padding:24px 20px;
@@ -623,7 +623,12 @@
       .form-wrap { padding:24px 16px; border-radius:20px; }
 
       /* Dashboard KPI: 2열 유지 */
-      .dash-kpi { grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
+      .dash-kpi { grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:24px; overflow-x:auto; }
+      .kpi-card { padding:14px 10px; }
+      .kpi-card .kpi-num { font-size:1.4rem; }
+      .kpi-card .kpi-icon { font-size:1.2rem; margin-bottom:8px; }
+      .kpi-card .kpi-lbl { font-size:.68rem; }
+      .kpi-card .kpi-sub { font-size:.62rem; }
       .kpi-card { padding:16px 14px; }
       .kpi-card .kpi-num { font-size:1.6rem; }
       /* 차트 1열 */
@@ -969,9 +974,9 @@
       <div class="form-note">
         <strong>📬 <span data-ko>제출 안내</span><span data-en>Submission Info</span></strong><br>
         <span data-ko>작성 완료 후 <b>이메일 앱이 자동으로 열립니다</b>. 서식 파일(HWP/PDF)은 이메일에 직접 첨부해 주세요.<br>
-        수신: 원우회 회장(skyoon7517@naver.com) · 원우회 부회장(kokoroa@smit.kr) · 교학팀(academic@smit.kr)</span>
+        수신: 원우회 회장(skyoon7517@naver.com) · 원우회 부회장(kokoroa@smit.kr) · 교학팀(admission@smit.ac.kr)</span>
         <span data-en>After submission, <b>your email app will open</b>. Please attach the HWP/PDF forms to the email.<br>
-        Recipients: President (skyoon7517@naver.com) · VP (kokoroa@smit.kr) · Academic Affairs (academic@smit.kr)</span>
+        Recipients: President (skyoon7517@naver.com) · VP (kokoroa@smit.kr) · Academic Affairs (admission@smit.ac.kr)</span>
       </div>
 
       <form id="clubForm" onsubmit="submitForm(event)">
@@ -1611,7 +1616,7 @@ Space, budget, equipment requests, etc..."></textarea>
           <div>🌐 <b>배포 주소:</b> <a href="https://smit-club-portal.vercel.app" target="_blank" style="color:var(--sky);">smit-club-portal.vercel.app</a></div>
           <div>📅 <b>마지막 수정:</b> 2026.05.12</div>
           <div>💾 <b>저장 방식:</b> 브라우저 localStorage (기기별)</div>
-          <div>📧 <b>동아리 신청 수신:</b> kokoroa@smit.kr · skyoon7517@naver.com · academic@smit.kr</div>
+          <div>📧 <b>동아리 신청 수신:</b> kokoroa@smit.kr · skyoon7517@naver.com · admission@smit.ac.kr</div>
         </div>
 
         <div style="border-top:1px solid #F1F3F5;padding-top:18px;">
@@ -1728,7 +1733,7 @@ Why do you want to join this club?"></textarea>
       <div class="contact-card">
         <div class="cc-icon">🏫</div>
         <h4><span data-ko>교학팀</span><span data-en>Academic Affairs</span></h4>
-        <p><a href="mailto:academic@smit.kr" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">academic@smit.kr</a></p>
+        <p><a href="mailto:admission@smit.ac.kr" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">admission@smit.ac.kr</a></p>
       </div>
       <div style="display:none">
       </div>
@@ -2314,7 +2319,7 @@ SMIT 원우회 동아리 포털 제출
 
   const subject = encodeURIComponent(`[SMIT 동아리신청] ${d.get('clubNameKo')} / ${d.get('clubNameEn')}`);
   const bodyEnc = encodeURIComponent(body);
-  const to = 'kokoroa@smit.kr,skyoon7517@naver.com,academic@smit.kr';
+  const to = 'kokoroa@smit.kr,skyoon7517@naver.com,admission@smit.ac.kr';
   const mailtoLink = `mailto:${to}?subject=${subject}&body=${bodyEnc}`;
 
   window.location.href = mailtoLink;
