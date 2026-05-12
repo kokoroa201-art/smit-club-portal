@@ -502,6 +502,67 @@
     .cmb-fill { height: 100%; border-radius: 10px; transition: width .6s ease; }
     .cmb-label { white-space: nowrap; color: var(--gray); }
 
+    /* ─── ADMIN ─── */
+    #adminOverlay { display:none; }
+    #adminOverlay.open { display:flex; }
+    .admin-tab-bar { display:flex; gap:4px; margin-bottom:24px; flex-wrap:wrap; }
+    .admin-tab {
+      padding:8px 18px; border-radius:20px; border:none; cursor:pointer;
+      font-size:.82rem; font-weight:700; font-family:inherit; transition:.2s;
+      background:#F1F3F5; color:var(--gray);
+    }
+    .admin-tab.active { background:linear-gradient(135deg,var(--purple),var(--sky)); color:#fff; }
+    .admin-section { display:none; }
+    .admin-section.active { display:block; }
+    .admin-status-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 18px; background:#F8F9FA; border-radius:14px; margin-bottom:10px;
+    }
+    .status-select {
+      border:2px solid #E5E7EB; border-radius:10px; padding:7px 12px;
+      font-size:.82rem; font-family:inherit; font-weight:600; cursor:pointer;
+    }
+    .admin-note-box {
+      width:100%; border:2px solid #E5E7EB; border-radius:12px;
+      padding:14px; font-size:.85rem; font-family:inherit; resize:vertical;
+      min-height:120px; line-height:1.7;
+    }
+    .admin-note-box:focus { outline:none; border-color:var(--purple); }
+    .admin-reset-btn {
+      padding:10px 20px; border-radius:10px; border:none; cursor:pointer;
+      background:#FFE8E8; color:var(--coral); font-size:.82rem; font-weight:700;
+      font-family:inherit; transition:.2s;
+    }
+    .admin-reset-btn:hover { background:var(--coral); color:#fff; }
+    .admin-save-btn {
+      padding:12px 24px; border-radius:12px; border:none; cursor:pointer;
+      background:linear-gradient(135deg,var(--purple),var(--sky));
+      color:#fff; font-size:.88rem; font-weight:700; font-family:inherit; transition:.2s;
+    }
+    .admin-save-btn:hover { opacity:.88; }
+
+    /* ─── JOIN BUTTON ─── */
+    .join-btn {
+      width:100%; padding:12px; border-radius:12px; margin-top:16px;
+      background:linear-gradient(135deg,var(--mint),#4CAF50);
+      color:#fff; border:none; cursor:pointer;
+      font-size:.88rem; font-weight:700; font-family:inherit;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      transition:.2s;
+    }
+    .join-btn:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(107,203,119,.4); }
+
+    /* ─── JOIN MODAL ─── */
+    .join-modal-input {
+      border:2px solid #E5E7EB; border-radius:12px;
+      padding:12px 14px; font-size:.9rem; font-family:inherit; width:100%;
+      transition:.2s;
+    }
+    .join-modal-input:focus {
+      outline:none; border-color:var(--mint);
+      box-shadow:0 0 0 4px rgba(107,203,119,.15);
+    }
+
     /* ─── EDIT BUTTON ─── */
     .edit-btn {
       background: rgba(255,255,255,0.3);
@@ -1280,6 +1341,11 @@ Space, budget, equipment requests, etc..."></textarea>
             <div class="cmb-track"><div class="cmb-fill" id="suda-bar" style="width:91.7%;background:linear-gradient(90deg,var(--sky),var(--purple));"></div></div>
             <div class="cmb-label"><span data-ko>내국인</span><span data-en>Dom.</span> <b style="color:var(--coral)" id="suda-pct-dom"> 8.3%</b></div>
           </div>
+
+          <button class="join-btn" onclick="openJoinModal('suda')">
+            <i class="fa fa-user-plus"></i>
+            <span data-ko>가입 신청하기</span><span data-en>Join This Club</span>
+          </button>
         </div>
       </div>
 
@@ -1399,6 +1465,247 @@ Space, budget, equipment requests, etc..."></textarea>
   </div>
 </div>
 
+<!-- ── 관리자 로그인 모달 ── -->
+<div id="adminLoginOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,var(--purple),var(--sky));padding:24px 28px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:#fff;font-size:1.1rem;font-weight:800;">🔐 관리자 로그인</div>
+        <div style="color:rgba(255,255,255,.75);font-size:.78rem;margin-top:4px;">원우회 임원 전용 페이지</div>
+      </div>
+      <button onclick="closeAdminLogin()" style="background:rgba(255,255,255,.25);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:28px;">
+      <div style="text-align:center;margin-bottom:22px;">
+        <div style="font-size:3rem;margin-bottom:8px;">🛡️</div>
+        <p style="color:var(--gray);font-size:.88rem;line-height:1.6;">관리자 비밀번호를 입력해 주세요.</p>
+      </div>
+      <input type="password" id="adminPwInput" placeholder="관리자 비밀번호"
+        style="width:100%;padding:14px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:1rem;font-family:inherit;margin-bottom:10px;transition:.2s;"
+        onkeydown="if(event.key==='Enter')checkAdminPw()">
+      <div id="adminPwError" style="color:var(--coral);font-size:.82rem;margin-bottom:12px;display:none;">❌ 비밀번호가 맞지 않습니다.</div>
+      <button onclick="checkAdminPw()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--purple),var(--sky));color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;">
+        확인
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 관리자 패널 ── -->
+<div id="adminOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+
+    <!-- 헤더 -->
+    <div style="background:linear-gradient(135deg,var(--purple),var(--sky));padding:24px 28px;border-radius:24px 24px 0 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;">
+      <div>
+        <div style="color:#fff;font-size:1.1rem;font-weight:800;">🛡️ 관리자 패널</div>
+        <div style="color:rgba(255,255,255,.75);font-size:.78rem;margin-top:4px;">SMIT 동아리포털 · 원우회 임원 전용</div>
+      </div>
+      <button onclick="closeAdminPanel()" style="background:rgba(255,255,255,.25);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;">✕</button>
+    </div>
+
+    <div style="padding:28px;">
+
+      <!-- 탭 -->
+      <div class="admin-tab-bar">
+        <button class="admin-tab active" onclick="switchAdminTab('status',this)">📋 동아리 현황</button>
+        <button class="admin-tab" onclick="switchAdminTab('edit',this)">✏️ 정보 수정</button>
+        <button class="admin-tab" onclick="switchAdminTab('memo',this)">📝 가입신청 메모</button>
+        <button class="admin-tab" onclick="switchAdminTab('system',this)">⚙️ 시스템</button>
+      </div>
+
+      <!-- ① 동아리 현황 탭 -->
+      <div class="admin-section active" id="admin-tab-status">
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;">동아리 상태 배지를 변경합니다. 저장 버튼을 누르면 즉시 반영됩니다.</p>
+
+        <div class="admin-status-row">
+          <div>
+            <div style="font-weight:700;font-size:.92rem;">🗣️ 수다 (Suda)</div>
+            <div style="font-size:.78rem;color:var(--gray);">한국어 말하기 동아리</div>
+          </div>
+          <select class="status-select" id="admin-status-suda">
+            <option value="new">🆕 준비중</option>
+            <option value="pending" selected>⏳ 신청대기</option>
+            <option value="review">🔍 검토중</option>
+            <option value="approved">✅ 승인완료</option>
+            <option value="rejected">❌ 반려</option>
+          </select>
+        </div>
+
+        <div class="admin-status-row" style="opacity:.5;">
+          <div>
+            <div style="font-weight:700;font-size:.92rem;">🏫 신규 동아리</div>
+            <div style="font-size:.78rem;color:var(--gray);">준비 중</div>
+          </div>
+          <select class="status-select" id="admin-status-new2" disabled>
+            <option value="new" selected>🆕 준비중</option>
+          </select>
+        </div>
+
+        <button class="admin-save-btn" onclick="saveAdminStatus()" style="margin-top:16px;">
+          💾 상태 저장
+        </button>
+      </div>
+
+      <!-- ② 정보 수정 탭 (비밀번호 없이) -->
+      <div class="admin-section" id="admin-tab-edit">
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;">관리자 권한으로 동아리 정보를 수정합니다. (클럽 비밀번호 불필요)</p>
+
+        <div style="background:#F8F9FA;border-radius:16px;padding:20px;margin-bottom:16px;">
+          <div style="font-weight:800;font-size:.95rem;margin-bottom:14px;">🗣️ 수다 (Suda)</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-group">
+              <label style="font-size:.82rem;font-weight:700;">👑 회장단</label>
+              <input type="text" id="admin-edit-officers" class="join-modal-input" placeholder="회장: 홍길동 · 부회장: 김철수">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.82rem;font-weight:700;">📝 동아리 소개</label>
+              <textarea id="admin-edit-desc" class="join-modal-input" rows="3" style="resize:vertical;"></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="form-group">
+                <label style="font-size:.82rem;font-weight:700;">🇰🇷 내국인 수</label>
+                <input type="number" id="admin-edit-domestic" class="join-modal-input" min="0">
+              </div>
+              <div class="form-group">
+                <label style="font-size:.82rem;font-weight:700;">🌍 외국인 수</label>
+                <input type="number" id="admin-edit-intl" class="join-modal-input" min="0">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:.82rem;font-weight:700;">🌍 주요 국적</label>
+              <input type="text" id="admin-edit-nationality" class="join-modal-input" placeholder="우즈베키스탄 · 베트남 · 인도 · 중국 등">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.82rem;font-weight:700;">📅 주요 활동</label>
+              <input type="text" id="admin-edit-activities" class="join-modal-input">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.82rem;font-weight:700;">📧 동아리 회장 이메일 <small style="font-weight:400;color:var(--gray)">(가입신청 수신)</small></label>
+              <input type="email" id="admin-edit-email" class="join-modal-input" placeholder="club-president@email.com">
+            </div>
+          </div>
+        </div>
+
+        <button class="admin-save-btn" onclick="saveAdminEdit()">
+          💾 저장 (화면 즉시 반영)
+        </button>
+      </div>
+
+      <!-- ③ 가입신청 메모 탭 -->
+      <div class="admin-section" id="admin-tab-memo">
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:14px;">이메일로 받은 가입신청 현황을 메모해 두세요. 이 기기에 저장됩니다.</p>
+        <textarea class="admin-note-box" id="admin-memo-box" placeholder="예) 홍길동 (20240001, 우즈베키스탄) — 2026.05.12 수신 ✅
+김민수 (20230056, 한국) — 2026.05.13 수신 🔍 검토중
+..."></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+          <button class="admin-save-btn" onclick="saveAdminMemo()">💾 메모 저장</button>
+        </div>
+      </div>
+
+      <!-- ④ 시스템 탭 -->
+      <div class="admin-section" id="admin-tab-system">
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:18px;">포털 데이터 관리 및 시스템 정보입니다.</p>
+
+        <div style="background:#F8F9FA;border-radius:14px;padding:18px;margin-bottom:16px;font-size:.85rem;line-height:2;">
+          <div>🌐 <b>배포 주소:</b> <a href="https://smit-club-portal.vercel.app" target="_blank" style="color:var(--sky);">smit-club-portal.vercel.app</a></div>
+          <div>📅 <b>마지막 수정:</b> 2026.05.12</div>
+          <div>💾 <b>저장 방식:</b> 브라우저 localStorage (기기별)</div>
+          <div>📧 <b>동아리 신청 수신:</b> kokoroa@smit.kr · skyoon7517@naver.com · academic@smit.kr</div>
+        </div>
+
+        <div style="border-top:1px solid #F1F3F5;padding-top:18px;">
+          <div style="font-weight:700;font-size:.88rem;margin-bottom:12px;color:var(--coral);">⚠️ 데이터 초기화</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="admin-reset-btn" onclick="resetClubData()">🗑️ 동아리 정보 초기화</button>
+            <button class="admin-reset-btn" onclick="resetMemo()">🗑️ 메모 초기화</button>
+            <button class="admin-reset-btn" onclick="resetAll()">🗑️ 전체 초기화</button>
+          </div>
+          <p style="font-size:.75rem;color:var(--gray);margin-top:10px;">※ 초기화 후 페이지를 새로고침하면 기본값으로 복원됩니다.</p>
+        </div>
+      </div>
+
+    </div><!-- /padding -->
+  </div>
+</div>
+
+<!-- ── 가입신청 모달 ── -->
+<div id="joinOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+
+    <div style="background:linear-gradient(135deg,var(--mint),#4CAF50);padding:24px 28px;border-radius:24px 24px 0 0;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:#fff;font-size:1.1rem;font-weight:800;" id="joinModalTitle">🙋 동아리 가입 신청</div>
+        <div style="color:rgba(255,255,255,.8);font-size:.78rem;margin-top:4px;">신청서가 원우회를 통해 동아리 회장에게 전달됩니다.</div>
+      </div>
+      <button onclick="closeJoinModal()" style="background:rgba(255,255,255,.25);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;">✕</button>
+    </div>
+
+    <div style="padding:28px;">
+      <div style="background:linear-gradient(135deg,#E8FFF0,#F0FFF4);border-radius:14px;padding:14px 18px;margin-bottom:22px;font-size:.82rem;color:var(--dark);line-height:1.7;">
+        📬 <span data-ko>작성 완료 후 <b>이메일 앱이 자동으로 열립니다.</b> 전송 버튼을 눌러 신청을 완료해 주세요.</span>
+        <span data-en>After submitting, <b>your email app will open.</b> Click Send to complete your application.</span>
+      </div>
+
+      <form id="joinForm" onsubmit="submitJoinForm(event)">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
+          <div class="form-group">
+            <label><span data-ko>이름</span><span data-en>Name</span> <span style="color:var(--coral)">*</span></label>
+            <input class="join-modal-input" type="text" name="joinName" required
+              placeholder="이름 / Name">
+          </div>
+
+          <div class="form-group">
+            <label><span data-ko>학번</span><span data-en>Student ID</span> <span style="color:var(--coral)">*</span></label>
+            <input class="join-modal-input" type="text" name="joinStudentId" required
+              placeholder="예: 20240001">
+          </div>
+
+          <div class="form-group">
+            <label><span data-ko>국적</span><span data-en>Nationality</span> <span style="color:var(--coral)">*</span></label>
+            <select class="join-modal-input" name="joinNationality" required>
+              <option value="">선택 / Select</option>
+              <option value="한국">🇰🇷 한국 / Korea</option>
+              <option value="우즈베키스탄">🇺🇿 우즈베키스탄 / Uzbekistan</option>
+              <option value="베트남">🇻🇳 베트남 / Vietnam</option>
+              <option value="네팔">🇳🇵 네팔 / Nepal</option>
+              <option value="인도">🇮🇳 인도 / India</option>
+              <option value="파키스탄">🇵🇰 파키스탄 / Pakistan</option>
+              <option value="몽골">🇲🇳 몽골 / Mongolia</option>
+              <option value="방글라데시">🇧🇩 방글라데시 / Bangladesh</option>
+              <option value="중국">🇨🇳 중국 / China</option>
+              <option value="태국">🇹🇭 태국 / Thailand</option>
+              <option value="러시아">🇷🇺 러시아 / Russia</option>
+              <option value="기타">기타 / Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label><span data-ko>연락처 (이메일 또는 전화)</span><span data-en>Contact (Email or Phone)</span> <span style="color:var(--coral)">*</span></label>
+            <input class="join-modal-input" type="text" name="joinContact" required
+              placeholder="your@email.com 또는 010-0000-0000">
+          </div>
+
+          <div class="form-group">
+            <label><span data-ko>지원 동기</span><span data-en>Motivation</span> <span style="color:var(--coral)">*</span></label>
+            <textarea class="join-modal-input" name="joinMotivation" required rows="4"
+              style="resize:vertical;"
+              placeholder="이 동아리에 가입하고 싶은 이유를 자유롭게 작성해 주세요.
+Why do you want to join this club?"></textarea>
+          </div>
+
+        </div>
+
+        <button type="submit" style="margin-top:20px;width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--mint),#4CAF50);color:#fff;border:none;font-size:.95rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;">
+          <i class="fa fa-paper-plane"></i>
+          <span data-ko>가입 신청서 제출</span><span data-en>Submit Application</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- ── CONTACT ── -->
 <section id="contact">
   <div class="container">
@@ -1434,6 +1741,10 @@ Space, budget, equipment requests, etc..."></textarea>
   <strong>서울미디어대학원대학교 원우회 (SMIT Student Council)</strong><br>
   <span data-ko>🌟 모든 원우를 환영합니다 🌟</span>
   <span data-en>🌟 All students welcome 🌟</span>
+  <br><br>
+  <button onclick="openAdminLogin()" style="background:none;border:none;color:rgba(255,255,255,.25);font-size:.72rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s;" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.25)'">
+    🔐 관리자
+  </button>
 </footer>
 
 <script>
@@ -1597,6 +1908,242 @@ window.addEventListener('DOMContentLoaded', () => {
 // 모달 바깥 클릭 시 닫기
 document.getElementById('editOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeEditModal();
+});
+
+/* ─── CLUB JOIN ─── */
+const JOIN_CLUBS = {
+  suda: {
+    name: '수다 (Suda)',
+    email: 'kokoroa@smit.kr,skyoon7517@naver.com'
+  }
+};
+
+let currentJoinClub = null;
+
+function openJoinModal(clubId) {
+  currentJoinClub = clubId;
+  const club = JOIN_CLUBS[clubId];
+  document.getElementById('joinModalTitle').textContent = '🙋 ' + club.name + ' 가입 신청';
+  document.getElementById('joinForm').reset();
+  const overlay = document.getElementById('joinOverlay');
+  overlay.style.display = 'flex';
+  setTimeout(() => overlay.querySelector('input').focus(), 100);
+}
+
+function closeJoinModal() {
+  document.getElementById('joinOverlay').style.display = 'none';
+  currentJoinClub = null;
+}
+
+function submitJoinForm(e) {
+  e.preventDefault();
+  const f = document.getElementById('joinForm');
+  const d = new FormData(f);
+  const club = JOIN_CLUBS[currentJoinClub];
+
+  const now = new Date().toLocaleString('ko-KR');
+  const body = `[동아리 가입 신청] ${club.name}
+━━━━━━━━━━━━━━━━━━━━━
+
+🙋 이름: ${d.get('joinName')}
+🆔 학번: ${d.get('joinStudentId')}
+🌍 국적: ${d.get('joinNationality')}
+📱 연락처: ${d.get('joinContact')}
+💬 지원 동기:
+${d.get('joinMotivation')}
+
+━━━━━━━━━━━━━━━━━━━━━
+신청일시: ${now}
+SMIT 동아리 포털에서 전송됨`.trim();
+
+  const subject = encodeURIComponent(`[${club.name} 가입신청] ${d.get('joinName')}`);
+  window.location.href = `mailto:${club.email}?subject=${subject}&body=${encodeURIComponent(body)}`;
+
+  closeJoinModal();
+  const t = document.getElementById('toast');
+  t.textContent = '✅ 이메일 앱이 열립니다. 전송을 눌러 신청을 완료하세요!';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+document.getElementById('joinOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeJoinModal();
+});
+
+/* ─── ADMIN ─── */
+const ADMIN_PW = 'smit@2026';
+
+const STATUS_MAP = {
+  new:      { cls:'new',     label:'🆕 준비중'  },
+  pending:  { cls:'pending', label:'⏳ 신청대기' },
+  review:   { cls:'review',  label:'🔍 검토중'  },
+  approved: { cls:'approved',label:'✅ 승인완료' },
+  rejected: { cls:'new',     label:'❌ 반려'     }
+};
+
+function openAdminLogin() {
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminPwError').style.display = 'none';
+  document.getElementById('adminLoginOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('adminPwInput').focus(), 100);
+}
+
+function closeAdminLogin() {
+  document.getElementById('adminLoginOverlay').style.display = 'none';
+}
+
+function checkAdminPw() {
+  const v = document.getElementById('adminPwInput').value;
+  if (v === ADMIN_PW) {
+    closeAdminLogin();
+    openAdminPanel();
+  } else {
+    document.getElementById('adminPwError').style.display = 'block';
+    document.getElementById('adminPwInput').value = '';
+    document.getElementById('adminPwInput').focus();
+  }
+}
+
+function openAdminPanel() {
+  // 탭 초기화
+  switchAdminTab('status', document.querySelector('.admin-tab'));
+
+  // 동아리 상태 불러오기
+  const savedStatus = localStorage.getItem('admin_status_suda') || 'pending';
+  document.getElementById('admin-status-suda').value = savedStatus;
+
+  // 수다 편집 필드 채우기
+  const saved = JSON.parse(localStorage.getItem('club_suda') || '{}');
+  document.getElementById('admin-edit-officers').value    = saved.officers    || document.getElementById('suda-officers')?.textContent.trim()    || '';
+  document.getElementById('admin-edit-desc').value        = saved.desc        || document.getElementById('suda-desc')?.textContent.trim()         || '';
+  document.getElementById('admin-edit-nationality').value = saved.nationality || document.getElementById('suda-nationality')?.textContent.trim()  || '';
+  document.getElementById('admin-edit-activities').value  = saved.activities  || document.getElementById('suda-activities')?.textContent.trim()   || '';
+  document.getElementById('admin-edit-email').value       = localStorage.getItem('admin_email_suda') || '';
+
+  const mtext = saved.members || document.getElementById('suda-members')?.textContent || '24명 (내국인 2 · 외국인 22)';
+  const mp = mtext.match(/내국인\s*(\d+)[^외]*외국인\s*(\d+)/);
+  document.getElementById('admin-edit-domestic').value = mp ? mp[1] : '2';
+  document.getElementById('admin-edit-intl').value     = mp ? mp[2] : '22';
+
+  // 메모 불러오기
+  document.getElementById('admin-memo-box').value = localStorage.getItem('admin_memo') || '';
+
+  document.getElementById('adminOverlay').style.display = 'flex';
+}
+
+function closeAdminPanel() {
+  document.getElementById('adminOverlay').style.display = 'none';
+}
+
+function switchAdminTab(name, btn) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('admin-tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function saveAdminStatus() {
+  const sel = document.getElementById('admin-status-suda').value;
+  localStorage.setItem('admin_status_suda', sel);
+
+  // 뱃지 갱신
+  const badge = document.querySelector('#club-suda .badge');
+  if (badge && STATUS_MAP[sel]) {
+    badge.className = 'badge ' + STATUS_MAP[sel].cls;
+    badge.textContent = STATUS_MAP[sel].label;
+  }
+  showToast('📋 동아리 상태가 변경되었습니다.');
+}
+
+function saveAdminEdit() {
+  const data = JSON.parse(localStorage.getItem('club_suda') || '{}');
+
+  data.officers    = document.getElementById('admin-edit-officers').value.trim();
+  data.desc        = document.getElementById('admin-edit-desc').value.trim();
+  data.nationality = document.getElementById('admin-edit-nationality').value.trim();
+  data.activities  = document.getElementById('admin-edit-activities').value.trim();
+
+  const dom  = parseInt(document.getElementById('admin-edit-domestic').value) || 0;
+  const intl = parseInt(document.getElementById('admin-edit-intl').value)     || 0;
+  const total = dom + intl;
+  const pctIntl = total > 0 ? Math.round(intl / total * 1000) / 10 : 0;
+  const pctDom  = total > 0 ? Math.round(dom  / total * 1000) / 10 : 0;
+  data.members = `${total}명 (내국인 ${dom} · 외국인 ${intl})`;
+
+  // 화면 즉시 반영
+  if (data.officers)    document.getElementById('suda-officers').textContent    = data.officers;
+  if (data.desc)        document.getElementById('suda-desc').textContent        = data.desc;
+  if (data.nationality) document.getElementById('suda-nationality').textContent = data.nationality;
+  if (data.activities)  document.getElementById('suda-activities').textContent  = data.activities;
+  document.getElementById('suda-members').textContent         = data.members;
+  document.getElementById('suda-bar').style.width             = pctIntl + '%';
+  document.getElementById('suda-pct-intl').textContent        = ' ' + pctIntl + '%';
+  document.getElementById('suda-pct-dom').textContent         = ' ' + pctDom  + '%';
+
+  // 회장 이메일 저장 (가입신청 수신처 업데이트)
+  const email = document.getElementById('admin-edit-email').value.trim();
+  if (email) {
+    localStorage.setItem('admin_email_suda', email);
+    JOIN_CLUBS.suda.email = email + ',kokoroa@smit.kr';
+  }
+
+  localStorage.setItem('club_suda', JSON.stringify(data));
+  showToast('✅ 수다 동아리 정보가 저장되었습니다.');
+}
+
+function saveAdminMemo() {
+  localStorage.setItem('admin_memo', document.getElementById('admin-memo-box').value);
+  showToast('📝 메모가 저장되었습니다.');
+}
+
+function resetClubData() {
+  if (!confirm('동아리 정보를 초기화할까요? (기본값으로 복원)')) return;
+  localStorage.removeItem('club_suda');
+  localStorage.removeItem('admin_status_suda');
+  localStorage.removeItem('admin_email_suda');
+  showToast('🗑️ 동아리 정보가 초기화되었습니다. 새로고침하면 반영됩니다.');
+}
+
+function resetMemo() {
+  if (!confirm('메모를 삭제할까요?')) return;
+  localStorage.removeItem('admin_memo');
+  document.getElementById('admin-memo-box').value = '';
+  showToast('🗑️ 메모가 삭제되었습니다.');
+}
+
+function resetAll() {
+  if (!confirm('모든 저장 데이터를 초기화할까요?')) return;
+  ['club_suda','admin_status_suda','admin_email_suda','admin_memo','smit-lang']
+    .forEach(k => localStorage.removeItem(k));
+  showToast('🗑️ 전체 초기화 완료. 새로고침하면 반영됩니다.');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.getElementById('adminLoginOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminLogin();
+});
+document.getElementById('adminOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminPanel();
+});
+
+// 페이지 로드 시 저장된 상태 복원
+window.addEventListener('DOMContentLoaded', () => {
+  const savedStatus = localStorage.getItem('admin_status_suda');
+  if (savedStatus && STATUS_MAP[savedStatus]) {
+    const badge = document.querySelector('#club-suda .badge');
+    if (badge) {
+      badge.className = 'badge ' + STATUS_MAP[savedStatus].cls;
+      badge.textContent = STATUS_MAP[savedStatus].label;
+    }
+  }
+  const savedEmail = localStorage.getItem('admin_email_suda');
+  if (savedEmail) JOIN_CLUBS.suda.email = savedEmail + ',kokoroa@smit.kr';
 });
 
 /* ─── LANGUAGE TOGGLE ─── */
