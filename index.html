@@ -491,14 +491,72 @@
     #pwInput:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(255,107,107,0.12); }
 
     /* ─── RESPONSIVE ─── */
+    #mobile-lang { display:none; }
+
     @media(max-width:768px) {
+      /* Nav */
       nav { padding:10px 16px; }
       .nav-links { display:none; }
+      #mobile-lang { display:flex !important; }
+
+      /* Hero */
+      #hero { padding:90px 16px 40px; }
+      #hero p { font-size:.9rem; }
+      .hero-btns { gap:10px; }
+      .btn { padding:12px 20px; font-size:.85rem; }
+      .hero-stats { gap:10px; margin-top:28px; flex-wrap:wrap; }
+      .stat-card { padding:12px 18px; }
+      .stat-card .num { font-size:1.5rem; }
+
+      /* Sections */
+      section { padding:48px 16px; }
+      .section-header { margin-bottom:28px; }
+
+      /* Steps */
+      .steps-grid { grid-template-columns:1fr; gap:14px; }
+      .step-card { padding:24px 18px; }
+
+      /* Download — icon+text 한 줄, 버튼 다음 줄 */
+      .dl-grid { grid-template-columns:1fr; gap:14px; }
+      .dl-card { flex-wrap:wrap; gap:10px; padding:18px; }
+      .dl-btns { flex-basis:100%; gap:8px; }
+      .dl-btn { flex:1; justify-content:center; }
+
+      /* Form */
       .form-grid { grid-template-columns:1fr; }
-      .form-wrap { padding:28px 20px; }
+      .form-wrap { padding:24px 16px; border-radius:20px; }
+
+      /* Dashboard KPI: 2열 유지 */
+      .dash-kpi { grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
+      .kpi-card { padding:16px 14px; }
+      .kpi-card .kpi-num { font-size:1.6rem; }
+      /* 차트 1열 */
       .charts-grid { grid-template-columns:1fr; }
-      .hero-stats { gap:16px; }
-      .stat-card { padding:14px 20px; }
+      /* 테이블 가로 스크롤 */
+      .table-card { overflow-x:auto; padding:16px 12px; }
+      .table-card table { min-width:480px; }
+      th, td { padding:8px 10px; font-size:.78rem; }
+
+      /* Club cards */
+      .club-cards { grid-template-columns:1fr; gap:20px; }
+
+      /* Contact */
+      .contact-cards { flex-direction:column; align-items:stretch; }
+      .contact-card { min-width:unset; padding:20px 24px; }
+      #contact h2 { font-size:1.5rem; }
+
+      /* Toast */
+      .toast { bottom:16px; right:16px; left:16px; text-align:center; }
+    }
+
+    @media(max-width:480px) {
+      .hero-stats { gap:8px; }
+      .stat-card { padding:10px 14px; }
+      .stat-card .num { font-size:1.3rem; }
+      .stat-card .lbl { font-size:.68rem; }
+      .btn { padding:11px 16px; font-size:.8rem; }
+      .hero-btns { flex-direction:column; align-items:center; }
+      .btn { width:100%; max-width:280px; justify-content:center; }
     }
   </style>
 </head>
@@ -527,7 +585,7 @@
       <span data-ko>🌐 English</span><span data-en>🌐 한국어</span>
     </button>
   </div>
-  <button class="lang-btn" onclick="toggleLang()" style="display:none" id="mobile-lang">
+  <button class="lang-btn" onclick="toggleLang()" id="mobile-lang">
     <span data-ko>EN</span><span data-en>KO</span>
   </button>
 </nav>
