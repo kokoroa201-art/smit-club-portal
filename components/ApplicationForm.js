@@ -105,13 +105,17 @@ SMIT 원우회 동아리 포털 제출
   const handleSubmit = async e => {
     e.preventDefault()
     setSubmitting(true)
-    const cleanMembers = members
-      .filter(m => m.name.trim())
+    const otherMembers = members
+      .filter(m => m.name.trim() && m.name.trim() !== form.presidentName.trim())
       .map(m => ({
         name: m.name.trim(),
         id: m.id.trim(),
         nationality: m.nationality.trim(),
       }))
+    const cleanMembers = [
+      { name: form.presidentName.trim(), id: form.studentId.trim(), nationality: form.nationality.trim() },
+      ...otherMembers,
+    ]
 
     try {
       await addApplication({

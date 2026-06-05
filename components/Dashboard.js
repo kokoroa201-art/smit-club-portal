@@ -16,8 +16,12 @@ export default function Dashboard() {
   const sudaMembers = sudaDomestic + sudaIntl
   const applicationMembers = activeApplications.reduce((sum, app) => sum + (app.review?.memberCount || 0), 0)
   const applicationIntl = activeApplications.reduce((sum, app) => {
+    const presidentInList = app.presidentName?.trim() && (app.members || []).some(m =>
+      (app.studentId?.trim() && m.id?.trim() === app.studentId.trim()) ||
+      m.name?.trim() === app.presidentName.trim()
+    )
     const membersIntl = (app.members || []).filter(m => m.nationality && !isKorean(m.nationality)).length
-    const presidentIntl = app.presidentName?.trim() && app.nationality && !isKorean(app.nationality) ? 1 : 0
+    const presidentIntl = app.presidentName?.trim() && !presidentInList && app.nationality && !isKorean(app.nationality) ? 1 : 0
     return sum + membersIntl + presidentIntl
   }, 0)
 
@@ -109,7 +113,11 @@ export default function Dashboard() {
                     <td><span className="badge new">🆕 준비중</span></td>
                   </tr>
                 ) : activeApplications.map((app, index) => {
-                  const presidentDomestic = app.presidentName?.trim() && isKorean(app.nationality || '') ? 1 : 0
+                  const presidentInList = app.presidentName?.trim() && (app.members || []).some(m =>
+                    (app.studentId?.trim() && m.id?.trim() === app.studentId.trim()) ||
+                    m.name?.trim() === app.presidentName.trim()
+                  )
+                  const presidentDomestic = app.presidentName?.trim() && !presidentInList && isKorean(app.nationality || '') ? 1 : 0
                   const domestic = (app.members || []).filter(member => isKorean(member.nationality || '')).length + presidentDomestic
                   const total = app.review?.memberCount || 0
                   const intl = Math.max(total - domestic, 0)
