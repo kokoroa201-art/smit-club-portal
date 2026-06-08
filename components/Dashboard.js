@@ -32,12 +32,17 @@ export default function Dashboard() {
   const totalIntl = sudaIntl + applicationIntl
   const intlPercent = totalMembers ? Math.round((totalIntl / totalMembers) * 1000) / 10 : 0
 
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
+  const monthEn = now.toLocaleString('en-US', { month: 'long' })
+
   return (
     <section id="dashboard">
       <div className="container">
         <div className="section-header">
           <div className="section-tag">{t('📊 동아리 현황 대시보드', '📊 Club Dashboard')}</div>
-          <h2>{t('2026년 5월 기준 현황', 'Status as of May 2026')}</h2>
+          <h2>{t(`${year}년 ${month}월 기준 현황`, `Status as of ${monthEn} ${year}`)}</h2>
           <p>{t('신청 접수와 관리자 검토 결과가 자동으로 반영됩니다.', 'Applications and admin review status are reflected here.')}</p>
         </div>
 
@@ -75,7 +80,7 @@ export default function Dashboard() {
         </div>
 
         <div className="table-card" style={{ marginTop: 24 }}>
-          <h3>{t('📋 개설 예정 동아리 현황 (2026년 5월 기준)', '📋 Planned Clubs (as of May 2026)')}</h3>
+          <h3>{t(`📋 개설 예정 동아리 현황 (${year}년 ${month}월 기준)`, `📋 Planned Clubs (as of ${monthEn} ${year})`)}</h3>
           <div style={{ overflowX: 'auto' }}>
             <table>
               <thead>
