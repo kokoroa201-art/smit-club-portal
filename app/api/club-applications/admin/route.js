@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin, isSupabaseAdminConfigured } from '../../../../lib/supabaseServer'
-import { fromDbRecord } from '../../../../lib/applicationRecords'
+import { fromDbRecord, toDbRecord, createApplication } from '../../../../lib/applicationRecords'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +16,24 @@ function unauthorized() {
 
 function unavailable() {
   return NextResponse.json({ error: 'Supabase service role is not configured' }, { status: 503 })
+}
+
+export async function POST(request) {
+  if (!isAdmin(request)) return unauthorized()
+  if (!isSupabaseAdminConfigured) return unavailable()
+
+  const body = await request.json()
+  const record = toDbRecord(createApplication(body, body.source || 'form'))
+
+  const { data, error } = await supabaseAdmin
+    .from('club_applications')
+    .upsert(record, { onConflict: 'id' })
+    .select('*')
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  return NextResponse.json({ application: fromDbRecord(data) })
 }
 
 export async function GET(request) {

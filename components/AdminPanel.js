@@ -83,6 +83,7 @@ export default function AdminPanel() {
     adminMemo, updateAdminMemo,
     applications, cloudReady, loadAdminApplications,
     importApplicationEmail, updateApplicationStatus, issueCertificate, deleteApplication,
+    syncLocalToCloud,
     resetClubData, resetMemo, resetAll,
     showToast,
   } = useApp()
@@ -404,6 +405,13 @@ export default function AdminPanel() {
                 <div>📧 <b>이메일 수신:</b> kokoroa@smit.kr · skyoon7517@naver.com · admission@smit.ac.kr</div>
               </div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <button className="admin-save-btn" onClick={async () => {
+                  const n = await syncLocalToCloud()
+                  showToast(n > 0 ? `☁️ ${n}개 신청서를 Supabase에 동기화했습니다.` : '동기화할 신청서가 없거나 관리자 로그인이 필요합니다.')
+                  if (n > 0) await loadAdminApplications()
+                }}>☁️ localStorage → Supabase 동기화</button>
+              </div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
                 <button className="admin-reset-btn" onClick={() => handleReset(resetClubData, '수다 동아리 정보를 초기화할까요?')}>동아리 정보 초기화</button>
                 <button className="admin-reset-btn" onClick={() => handleReset(resetMemo, '메모를 삭제할까요?')}>메모 초기화</button>
                 <button className="admin-reset-btn" onClick={() => handleReset(resetAll, '로컬 저장 데이터를 초기화할까요? Supabase 데이터는 삭제되지 않습니다.')}>로컬 초기화</button>
